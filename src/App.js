@@ -57,13 +57,13 @@ class App extends Component {
    * @param {*} points3 顺序点3
    * @param {Bollean} flagOfFirst  first true  第一组点  false   非第一组点 
    */
-  getLocation (points1, points2, points3, flagOfFirst, tparr, btarr, flag2) {
+  getLocation (points1, points2, points3, flagOfFirst, tparr, btarr, isLast) {
     let lineBottom1 = this.setLineAndMarker(points1, points2, true, flagOfFirst);
     let lineTop1 = this.setLineAndMarker(points1, points2, false, flagOfFirst);
    
     let lineBottom2 = this.setLineAndMarker(points2, points3, true, false);
     let lineTop2 = this.setLineAndMarker(points2, points3, false, false);
-    let lines = getAreaList(lineTop1, lineBottom1, lineTop2, lineBottom2)
+    let lines = getAreaList(lineTop1, lineBottom1, lineTop2, lineBottom2, isLast)
     if (flagOfFirst) {
       tparr.push(lineTop1.newPoint1);
       btarr.push(lineBottom1.newPoint1);
@@ -94,8 +94,8 @@ class App extends Component {
       let point2 = riverArr[i + 1];
       let point3 = riverArr[i + 2];
       let flag = i == 0 ? true : false
-      let falg2 = i ==  len ? true : false
-      let { tp, bt } = this.getLocation(point1, point2, point3,flag, tparr, btarr, falg2);
+      let isLast = i ==  len ? true : false
+      let { tp, bt } = this.getLocation(point1, point2, point3,flag, tparr, btarr, isLast);
       tparr = tp;
       btarr = bt;
     }
@@ -154,14 +154,16 @@ class App extends Component {
     let ntdmapArrayB = initBottom.map(current => {
       return new window.T.LngLat(current._lon, current._lat);
     })
-    let poline = new window.T.Polyline(ntdmapArray, {
+
+    let pointsAll = ntdmapArray.concat(ntdmapArrayB.reverse());
+    let poline = new window.T.Polygon(pointsAll, {
         color: "red", weight: 3, opacity: 0.5
     });
-    let poline2 = new window.T.Polyline(ntdmapArrayB, {
-      color: "red", weight: 3, opacity: 0.5
-    });
+    // let poline2 = new window.T.Polyline(ntdmapArrayB, {
+    //   color: "red", weight: 3, opacity: 0.5
+    // });
 
-    map.addOverLay(poline2)
+    //map.addOverLay(poline2)
     map.addOverLay(poline)
     map.setViewport(ntdmapArray)
   }

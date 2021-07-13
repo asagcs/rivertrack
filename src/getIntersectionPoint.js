@@ -19,7 +19,7 @@ function getIntersectionPoints (p1, p2, p3, p4) {
  * @param {*} lineTop2 
  * @param {*} lineBottom2 
  */
-export function getAreaList (lineTop1, lineBottom1, lineTop2, lineBottom2) {
+export function getAreaList (lineTop1, lineBottom1, lineTop2, lineBottom2, isLast) {
      // let polygonArr = [lineTop1.newPoint1, lineTop1.newPoint2, lineBottom1.newPoint1, lineBottom1.newPoint2];
      let p1 = new LatLon(lineTop1.newPoint1._lat, lineTop1.newPoint1._lon);
      let p2 = new LatLon(lineTop1.newPoint2._lat, lineTop1.newPoint2._lon);
@@ -57,6 +57,10 @@ export function getAreaList (lineTop1, lineBottom1, lineTop2, lineBottom2) {
         }
         topPointArrayReturn1.push(getIntersectionPoints(p1, p2, p5, p6));
         // topPointArrayReturn1.push(p6)
+     }
+     if (isLast) {
+        topPointArrayReturn1.push(p6);
+        topPointArrayReturn2.push(p8)
      }
      return {
          topArr: topPointArrayReturn1,
