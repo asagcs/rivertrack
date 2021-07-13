@@ -43,6 +43,7 @@ class App extends Component {
     // 获取点位置
     let newPoint1 = p1.destinationPoint(100, (Angle1 + angle));
     let newPoint2 = p2.destinationPoint(100, (Angle1 + angle));
+    
 
     return {
       newPoint1,
@@ -60,9 +61,15 @@ class App extends Component {
   getLocation (points1, points2, points3, flagOfFirst, tparr, btarr, isLast) {
     let lineBottom1 = this.setLineAndMarker(points1, points2, true, flagOfFirst);
     let lineTop1 = this.setLineAndMarker(points1, points2, false, flagOfFirst);
-   
+    // this.setPoline([lineBottom1.newPoint1, lineBottom1.newPoint2])
+    // this.setPoline([lineTop1.newPoint1, lineTop1.newPoint2])
+    // this.setMarker1(points1[0], points1[1])
+    // this.setMarker1(points2[0], points2[1])
+    // this.setMarker1(points3[0], points3[1])
     let lineBottom2 = this.setLineAndMarker(points2, points3, true, false);
     let lineTop2 = this.setLineAndMarker(points2, points3, false, false);
+    // this.setPoline([lineBottom2.newPoint1, lineBottom2.newPoint2])
+    // this.setPoline([lineTop2.newPoint1, lineTop2.newPoint2])
     let lines = getAreaList(lineTop1, lineBottom1, lineTop2, lineBottom2, isLast)
     if (flagOfFirst) {
       tparr.push(lineTop1.newPoint1);
@@ -99,7 +106,7 @@ class App extends Component {
       tparr = tp;
       btarr = bt;
     }
-    this.setPolygon()
+    // this.setPolygon()
     this.setPoline2(tparr,  btarr);
   }
 

@@ -37,9 +37,13 @@ export function getAreaList (lineTop1, lineBottom1, lineTop2, lineBottom2, isLas
      let topPointArrayReturn1 = []
      let topPointArrayReturn2 = []
      if (flag1 && flag2) {
+        topPointArrayReturn1 = [p1]
+        topPointArrayReturn2 = [p3, p4, p7]
      } else if (!flag1 && !flag2) {
         topPointArrayReturn1 = [p2, p5]
         if (flag7 && flag8) {
+            topPointArrayReturn1 = [p1, p2, p5]
+            topPointArrayReturn2 = [p3]
         } else if (!flag7 && !flag8){
             topPointArrayReturn2 = [p4, p7];
         } else {
