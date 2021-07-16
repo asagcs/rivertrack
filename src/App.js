@@ -61,23 +61,30 @@ class App extends Component {
   getLocation (points1, points2, points3, flagOfFirst, tparr, btarr, isLast) {
     let lineBottom1 = this.setLineAndMarker(points1, points2, true, flagOfFirst);
     let lineTop1 = this.setLineAndMarker(points1, points2, false, flagOfFirst);
-    // this.setPoline([lineBottom1.newPoint1, lineBottom1.newPoint2])
-    // this.setPoline([lineTop1.newPoint1, lineTop1.newPoint2])
-    // this.setMarker1(points1[0], points1[1])
-    // this.setMarker1(points2[0], points2[1])
-    // this.setMarker1(points3[0], points3[1])
+    this.setPoline([lineBottom1.newPoint1, lineBottom1.newPoint2])
+    this.setPoline([lineTop1.newPoint1, lineTop1.newPoint2])
+    this.setMarker1(points1[0], points1[1])
+    this.setMarker1(points2[0], points2[1])
+    this.setMarker1(points3[0], points3[1])
     let lineBottom2 = this.setLineAndMarker(points2, points3, true, false);
     let lineTop2 = this.setLineAndMarker(points2, points3, false, false);
-    // this.setPoline([lineBottom2.newPoint1, lineBottom2.newPoint2])
-    // this.setPoline([lineTop2.newPoint1, lineTop2.newPoint2])
-    let lines = getAreaList(lineTop1, lineBottom1, lineTop2, lineBottom2, isLast)
+     this.setPoline([lineBottom2.newPoint1, lineBottom2.newPoint2])
+    this.setPoline([lineTop2.newPoint1, lineTop2.newPoint2])
+    
     if (flagOfFirst) {
       tparr.push(lineTop1.newPoint1);
       btarr.push(lineBottom1.newPoint1);
     } 
 
-    let tp = tparr.concat(lines.topArr);
-    let bt = btarr.concat(lines.bottomArr)
+    this.setMarker(lineTop1.newPoint1._lat,lineTop1.newPoint1._lon)
+    this.setMarker(lineTop1.newPoint2._lat,lineTop1.newPoint2._lon)
+    this.setMarker(lineTop2.newPoint1._lat,lineTop2.newPoint1._lon)
+    this.setMarker(lineTop2.newPoint2._lat,lineTop2.newPoint2._lon)
+    let lines = getAreaList(lineTop1, lineBottom1, lineTop2, lineBottom2, isLast, tparr, btarr)
+    
+
+    let tp = lines.topArr;
+    let bt = lines.bottomArr
 
     return {
       tp,
@@ -87,6 +94,34 @@ class App extends Component {
 
 
   setPolineOfArea () {
+    
+    
+    // let river = `115.251071565:28.760179962,115.25203716:28.759343113,115.252584331:28.760072674`;
+    let river = `115.18594753:28.78465351,115.185926072:28.782893981,115.185690038:28.781756725,115.188114755:28.780962791,115.19000303:28.779696788,115.193092935:28.778838481,115.196204297:28.77866682,115.19839298:28.778366412,115.201547257:28.778194751,115.206074826:28.776306476,115.208521001:28.775748576,115.209787004:28.775512542,115.21092426:28.773985185,115.211224668:28.773426427,115.212254636:28.7734908,115.212662332:28.773297681,115.213542096:28.773662462,115.215451829:28.773469342,115.215687863:28.772954358,115.214786641:28.772341098,115.21590244:28.770302619,115.219056718:28.771482791,115.219850652:28.769916381,115.220408551:28.767788209,115.222747437:28.765614976,115.223219506:28.76456355,115.225472562:28.763140477,115.226373784:28.762496747,115.226073377:28.761368932,115.226588361:28.759681072,115.227435939:28.758329024,115.228101127:28.757805456,115.229055993:28.757719626,115.230815522:28.758395542,115.231920592:28.758406271,115.232950561:28.758910527,115.23369085:28.760187258,115.234538428:28.760544743,115.2357186:28.761628355,115.236930959:28.761842932,115.238046758:28.762196984,115.238497369:28.762390103,115.239430778:28.762121882,115.240589492:28.76269051,115.241555087:28.763527359,115.242306106:28.763870682,115.243550651:28.763924326,115.243529193:28.763377156,115.244655721:28.762669052,115.245417468:28.761928763,115.246361606:28.761778559,115.246983878:28.761531796,115.248271338:28.761928763,115.248968713:28.76158544,115.249794833:28.761714186,115.250921361:28.761134829,115.251071565:28.760179962,115.25203716:28.759343113,115.252584331:28.760072674,115.253206603:28.760040488,115.25378596:28.759729351,115.254182927:28.75909635`;
+
+
+    let tparr = [], btarr = [];
+    let riverArr = river.split(',').map(current => {
+      let point = current.split(':');
+      return point.reverse()
+    })
+    let len = riverArr.length - 3
+    for (var i = 0; i <= len; i++) {
+      let point1 = riverArr[i];
+      let point2 = riverArr[i + 1];
+      let point3 = riverArr[i + 2];
+      let flag = i == 0 ? true : false
+      let isLast = i ==  len ? true : false
+      let { tp, bt } = this.getLocation(point1, point2, point3,flag, tparr, btarr, isLast);
+      tparr = tp;
+      btarr = bt;
+    }
+    this.setPolygon()
+    this.setPoline2(tparr,  btarr);
+    // this.setPolineOfArea2()
+  }
+
+  setPolineOfArea2 () {
     
     
     let river = `115.18594753:28.78465351,115.185926072:28.782893981,115.185690038:28.781756725,115.188114755:28.780962791,115.19000303:28.779696788,115.193092935:28.778838481,115.196204297:28.77866682,115.19839298:28.778366412,115.201547257:28.778194751,115.206074826:28.776306476,115.208521001:28.775748576,115.209787004:28.775512542,115.21092426:28.773985185,115.211224668:28.773426427,115.212254636:28.7734908,115.212662332:28.773297681,115.213542096:28.773662462,115.215451829:28.773469342,115.215687863:28.772954358,115.214786641:28.772341098,115.21590244:28.770302619,115.219056718:28.771482791,115.219850652:28.769916381,115.220408551:28.767788209,115.222747437:28.765614976,115.223219506:28.76456355,115.225472562:28.763140477,115.226373784:28.762496747,115.226073377:28.761368932,115.226588361:28.759681072,115.227435939:28.758329024,115.228101127:28.757805456,115.229055993:28.757719626,115.230815522:28.758395542,115.231920592:28.758406271,115.232950561:28.758910527,115.23369085:28.760187258,115.234538428:28.760544743,115.2357186:28.761628355,115.236930959:28.761842932,115.238046758:28.762196984,115.238497369:28.762390103,115.239430778:28.762121882,115.240589492:28.76269051,115.241555087:28.763527359,115.242306106:28.763870682,115.243550651:28.763924326,115.243529193:28.763377156,115.244655721:28.762669052,115.245417468:28.761928763,115.246361606:28.761778559,115.246983878:28.761531796,115.248271338:28.761928763,115.248968713:28.76158544,115.249794833:28.761714186,115.250921361:28.761134829,115.251071565:28.760179962,115.25203716:28.759343113,115.252584331:28.760072674,115.253206603:28.760040488,115.25378596:28.759729351,115.254182927:28.75909635`;
@@ -106,8 +141,8 @@ class App extends Component {
       tparr = tp;
       btarr = bt;
     }
-    // this.setPolygon()
-    this.setPoline2(tparr,  btarr);
+    this.setPolygon()
+    // this.setPoline2(tparr,  btarr);
   }
 
   setMarker1 (lat, long) {
@@ -152,17 +187,32 @@ class App extends Component {
     map.setViewport(newArr1)
   }
 
-  setPoline2 (initTop, initBottom) {
-    let { map } = this.state;
-    let ntdmapArray = initTop.map(current => {
+  /**
+   * 
+   * @param {*} topArr 顶部经纬度数据集 
+   * @param {*} bottomArr 底部经纬度数据集
+   * @returns {Obejct} { pointsAll, ntdmapArray } 天地图实例化后的经纬度数据集-合并及底部数据集
+   */
+  arrayCombine (topArr, bottomArr) {
+    let ntdmapArray = topArr.map(current => {
       return new window.T.LngLat(current._lon, current._lat);
     })
 
-    let ntdmapArrayB = initBottom.map(current => {
+    let ntdmapArrayB = bottomArr.map(current => {
       return new window.T.LngLat(current._lon, current._lat);
     })
 
     let pointsAll = ntdmapArray.concat(ntdmapArrayB.reverse());
+    return pointsAll
+  }
+  
+  filterPointsArray (initTop, initBottom) {
+  }
+  
+
+  setPoline2 (initTop, initBottom) {
+    let { map } = this.state;
+    let pointsAll = this.arrayCombine(initTop, initBottom);
     let poline = new window.T.Polygon(pointsAll, {
         color: "red", weight: 3, opacity: 0.5
     });
@@ -172,7 +222,6 @@ class App extends Component {
 
     //map.addOverLay(poline2)
     map.addOverLay(poline)
-    map.setViewport(ntdmapArray)
   }
   
   render () {
