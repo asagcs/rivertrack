@@ -1,7 +1,7 @@
 import './App.css';
 import React, { Component } from 'react';
 import LatLon from 'geodesy/latlon-ellipsoidal-vincenty.js'; // Node.js
-import { getAreaList } from './getIntersectionPoint';
+import { getAreaList2 } from './getIntersectionPoint';
 
 
 class App extends Component {
@@ -80,7 +80,7 @@ class App extends Component {
     this.setMarker(lineTop1.newPoint2._lat,lineTop1.newPoint2._lon)
     this.setMarker(lineTop2.newPoint1._lat,lineTop2.newPoint1._lon)
     this.setMarker(lineTop2.newPoint2._lat,lineTop2.newPoint2._lon)
-    let lines = getAreaList(lineTop1, lineBottom1, lineTop2, lineBottom2, isLast, tparr, btarr)
+    let lines = getAreaList2(lineTop1, lineBottom1, lineTop2, lineBottom2, isLast, tparr, btarr)
     
 
     let tp = lines.topArr;
