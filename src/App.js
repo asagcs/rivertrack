@@ -116,6 +116,8 @@ class App extends Component {
       tparr = tp;
       btarr = bt;
     }
+    
+
     this.setPolygon()
     this.setPoline2(tparr,  btarr);
     // this.setPolineOfArea2()
@@ -219,7 +221,14 @@ class App extends Component {
     // let poline2 = new window.T.Polyline(ntdmapArrayB, {
     //   color: "red", weight: 3, opacity: 0.5
     // });
-
+    // let test = pointsAll.reduce( (add, current, currentIndex) => {
+    //   if (currentIndex === 0) {
+    //     return add + `${current.lng}:${current.lat}`
+    //   } else {
+    //     return add + `,${current.lng}:${current.lat}`
+    //   }
+    // }, '')
+    // console.log(test);
     //map.addOverLay(poline2)
     map.addOverLay(poline)
   }

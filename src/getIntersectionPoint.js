@@ -23,16 +23,6 @@ import LatLon from 'geodesy/latlon-nvector-spherical.js';
     return newPointsAll
   }
 
-function getIntersectionPoints (pn1, pn2, pn3, pn4) {
-    let intersection = null
-    intersection = LatLon.intersection(pn1, pn2, pn3, pn4);
-    return intersection
-}
-
-function judgeTwoInLastarea (p1, p2, tparr, btarr) {
-
-}
-
 /**
  * 判断交点是否在上一个范围内
  * @param {*} intersection 
@@ -84,7 +74,7 @@ function judgeInnerInOther (intersection, tparr, btarr, last, isTop) {
     } else {
         intArr = [newstart]
     }  
-    console.log(intArr);
+    // console.log(intArr);
     if (intArr[0] == false ) {
         intArr = []
     }
@@ -116,7 +106,7 @@ function judgeInnerInOther (intersection, tparr, btarr, last, isTop) {
 }
 
 /**
- * 同向， 是否有焦点
+ * 同向， 是否有交点
  * @param {*} pn1 
  * @param {*} pn2 
  * @param {*} pn3 
@@ -170,6 +160,13 @@ function hasIntersection (pn1, pn2, pn3, pn4) {
 
         if (pointStatus !== 1)   {
             topPointArrayReturn1 = [p2, p5];
+            let cross = hasIntersection(p1,p3, p5, p7)
+            if (cross) {
+
+            } else {
+                topPointArrayReturn1 = [p2, p5];
+            }
+
         } else {
             topPointArrayReturn2 = [p4]
         }
@@ -182,6 +179,12 @@ function hasIntersection (pn1, pn2, pn3, pn4) {
         let pointStatus = pointInOther(firstArr, p7, p8)
         if (pointStatus !== 1)  {
             topPointArrayReturn2 = [p4, p7];
+            let cross = hasIntersection(p1,p3, p5, p7)
+            if (cross) {
+
+            } else {
+                topPointArrayReturn2 = [p4, p7];
+            }
         } else {
             topPointArrayReturn2 = [p4]
         }
