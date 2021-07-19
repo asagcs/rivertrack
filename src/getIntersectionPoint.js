@@ -23,6 +23,23 @@ import LatLon from 'geodesy/latlon-nvector-spherical.js';
     return newPointsAll
   }
 
+  /**
+   * @param {*} topArr 顶部经纬度数据集 
+   * @param {*} bottomArr 底部经纬度数据集
+   * @returns {Obejct} { pointsAll, ntdmapArray } 天地图实例化后的经纬度数据集-合并及底部数据集
+   */
+ function arrayCombineAll (topArr, bottomArr) {
+     if (topArr.length < 2 || bottomArr.length < 2) return false;
+   let topLast = [], bottomLast = [];
+   topLast = topArr.slice(-4);
+   bottomLast = bottomArr.slice(-4);
+   let pointsAll = topLast.concat(bottomLast.reverse());
+   let newPointsAll = pointsAll.map(current => {
+       return new LatLon(current._lat, current._lon)
+   })
+   return newPointsAll
+ }
+
 /**
  * 判断交点是否在上一个范围内
  * @param {*} intersection 
@@ -90,6 +107,7 @@ function judgeInnerInOther (intersection, tparr, btarr, last, isTop) {
  * @returns status
  */
  function pointInOther (firstarray, pn1, pn2) {
+   
     let innerFlag1 = pn1.isEnclosedBy(firstarray);
     let innerFlag2 = pn2.isEnclosedBy(firstarray);
     let status = 0; //都不在
@@ -127,6 +145,47 @@ function hasIntersection (pn1, pn2, pn3, pn4) {
         return false
     }
 }
+
+// 坐标转换为该页面引用的LatLon类型
+function transformLatLon (point) {
+    if (point._lat) {
+        return new LatLon(point._lat, point._lat)
+    } else if (point instanceof Array){
+        return new LatLon(point[0]._lat, point[0]._lon)
+    }
+    
+}
+
+/**
+ * 新的区域边界点  判断是否在之前的有效区域内， 如果是，则求新的边界点与之前的边界的焦点
+ * @param {*} tparr 
+ * @param {*} btarr 
+ * @param {*} topPointArrayReturn 
+ * @param {*} pn1 
+ * @param {*} pn2 
+ */
+function judgeIsInLastarea (tparr, btarr, topPointArrayReturn, pn1, pn2) {
+    let lastToparrOfAgo = tparr.slice(-3);
+    let lastBotarrOfAgo = btarr.slice(-3);
+    let lastAreaAgo = arrayCombineAll(lastToparrOfAgo, lastBotarrOfAgo);
+    if (lastAreaAgo && topPointArrayReturn[1].isEnclosedBy(lastAreaAgo)) {
+        let lastPoints1 = tparr.slice(-2)[0];
+        let lastPoints2 = tparr.slice(-1);
+
+        let cross = hasIntersection(pn1, pn2, transformLatLon(lastPoints1), transformLatLon(lastPoints2));
+        if (cross) {
+            tparr.splice(-1)
+            topPointArrayReturn = [cross]
+        } else {
+            if (pn2.isEnclosedBy(lastAreaAgo)) {
+                topPointArrayReturn = []
+            }
+        }
+    }
+    return topPointArrayReturn
+}
+
+
 
 /**
  * 三点折现确定区域2
@@ -179,12 +238,7 @@ function hasIntersection (pn1, pn2, pn3, pn4) {
         let pointStatus = pointInOther(firstArr, p7, p8)
         if (pointStatus !== 1)  {
             topPointArrayReturn2 = [p4, p7];
-            let cross = hasIntersection(p1,p3, p5, p7)
-            if (cross) {
-
-            } else {
-                topPointArrayReturn2 = [p4, p7];
-            }
+            
         } else {
             topPointArrayReturn2 = [p4]
         }
@@ -196,7 +250,9 @@ function hasIntersection (pn1, pn2, pn3, pn4) {
         if (inset1) {
             tparr.splice(-1);
             topPointArrayReturn1[0] = inset1;
-        } 
+        } else {
+            topPointArrayReturn1 = judgeIsInLastarea(tparr, btarr, topPointArrayReturn1, p5, p6);
+        }
     }
 
     if (topPointArrayReturn2.length === 2 && btarr.length > 2) {
@@ -204,7 +260,9 @@ function hasIntersection (pn1, pn2, pn3, pn4) {
         if (inset1) {
             btarr.splice(-1);
             topPointArrayReturn2[0] = inset1;
-        } 
+        }  else {
+            topPointArrayReturn2 = judgeIsInLastarea(tparr, btarr, topPointArrayReturn2, p7, p8)
+        }
     }
 
    
